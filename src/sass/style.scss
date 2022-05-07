@@ -10,6 +10,11 @@
     box-sizing: border-box;
 }
 
+button,
+a {
+    cursor: pointer;
+}
+
 .container {
     background-color: $color-main;
     height: 100vh;
@@ -129,7 +134,6 @@
             position: absolute;
             right: 0;
             font-weight: 500;
-
         }
 
         &__balance-container {
@@ -143,11 +147,11 @@
             text-transform: uppercase;
         }
 
-        .positive-number{
+        .positive-number {
             color: $color-font-positive-number;
         }
 
-        .negative-number{
+        .negative-number {
             color: $color-font-negative-number;
         }
     }

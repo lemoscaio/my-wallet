@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import axios from "axios"
 
 import Header from "./Header"
@@ -10,10 +11,15 @@ const API_URL = "http://localhost:5000"
 
 export default function MainScreen() {
     const [statements, setStatements] = useState([])
+    const navigate = useNavigate()
     const name = localStorage.getItem("user")
     const token = localStorage.getItem("token")
 
     useEffect(() => {
+        if (!token && !name) {
+            navigate("/sign-in")
+            return
+        }
         axios
             .get(`${API_URL}/statements`, {
                 headers: { Authorization: `Bearer ${token}` },
