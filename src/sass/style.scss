@@ -22,79 +22,93 @@ a {
     font-family: $font-main;
 }
 
+.header {
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+
+    padding: 30px 0;
+
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &__input {
+        padding: 15px 10px;
+        margin: 5px 0px;
+        width: 100%;
+        font-size: 20px;
+
+        &:last-of-type {
+            margin-bottom: 15px;
+        }
+
+        &::placeholder {
+            font-family: $font-main;
+            color: $color-font-secondary;
+        }
+    }
+    &__button {
+        width: 100%;
+
+        background-color: $color-button-background;
+
+        border: none;
+
+        border-radius: 5px;
+        margin: 5px 0px;
+        padding: 15px 10px;
+
+        color: $color-font-main;
+        font-size: 20px;
+        font-family: $font-main;
+        font-weight: bold;
+
+        &--cancel {
+            background-color: transparent;
+            border: 3px solid $color-button-background;
+        }
+    }
+
+    &__link-to-sign-up,
+    &__link-to-sign-in {
+        margin-top: 30px;
+
+        color: $color-font-main;
+        font-weight: bold;
+        text-decoration: none;
+    }
+}
+
 .sign-screen {
     .sign {
         width: 80%;
         height: 100%;
         margin: 0 auto;
 
-        &__form {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
 
         &__title {
             color: $color-font-main;
             font-size: 32px;
             font-family: $font-title;
             padding: 20px;
-        }
-        &__input {
-            padding: 15px 10px;
-            margin: 5px 0px;
-            width: 100%;
-            font-size: 20px;
-
-            &::placeholder {
-                font-family: $font-main;
-                color: $color-font-secondary;
-            }
-        }
-        &__button {
-            width: 100%;
-
-            background-color: $color-button-background;
-
-            border: none;
-
-            border-radius: 5px;
-            margin: 5px 0px;
-            padding: 15px 10px;
-
-            color: $color-font-main;
-            font-size: 20px;
-            font-family: $font-main;
-            font-weight: bold;
-        }
-
-        &__link-to-sign-up,
-        &__link-to-sign-in {
-            margin-top: 30px;
-
-            color: $color-font-main;
-            font-weight: bold;
-            text-decoration: none;
+            text-align: center;
         }
     }
 }
 
 .main-screen {
-    .header {
-        width: 90%;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-
-        padding: 30px 0;
-
-        color: white;
-        font-size: 26px;
-        font-weight: bold;
-    }
-
     .statements {
         width: 90%;
         height: 100%;
@@ -123,6 +137,7 @@ a {
         &__date {
             text-align: left;
             color: $color-button-extra-light;
+            font-weight: 500;
         }
 
         &__description {
@@ -145,6 +160,11 @@ a {
         &__balance-label {
             font-weight: bold;
             text-transform: uppercase;
+        }
+
+
+        &__balance-value {
+            font-weight: 500;
         }
 
         .positive-number {
@@ -188,6 +208,14 @@ a {
 
     &__button-label {
         text-align: left;
-        width: 40%;
+        width: 30%;
+    }
+}
+
+.new-entry-screen {
+    .new-entry {
+        width: 90%;
+        height: 100%;
+        margin: 0 auto;
     }
 }

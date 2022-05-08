@@ -12,11 +12,11 @@ const API_URL = "http://localhost:5000"
 export default function MainScreen() {
     const [statements, setStatements] = useState([])
     const navigate = useNavigate()
-    const name = localStorage.getItem("user")
+    const userName = localStorage.getItem("user")
     const token = localStorage.getItem("token")
 
     useEffect(() => {
-        if (!token && !name) {
+        if (!token && !userName) {
             navigate("/sign-in")
             return
         }
@@ -37,7 +37,7 @@ export default function MainScreen() {
     return (
         <main className="main-screen container">
             <div className="main-screen__content">
-                <Header name={name}></Header>
+                <Header name={userName}></Header>
 
                 <Statements statements={statements} />
 
