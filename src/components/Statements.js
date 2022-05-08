@@ -1,16 +1,59 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
+import axios from "axios"
 
-export default function Statements(props) {
-    const { statements } = props
+// const API_URL = "https://caio-lemos-my-wallet.herokuapp.com"
+const API_URL = "http://localhost:5000"
+
+export default function Statements() {
+    const token = localStorage.getItem("token")
+    const [statements, setStatements] = useState([])
+
+    useEffect(() => {
+        axios
+            .get(`${API_URL}/statements`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((response) => {
+                console.log(response)
+
+                setStatements([...response.data])
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }, [])
 
     function calcBalance() {
         let balance = statements.reduce((accumulator, { value, type }) => {
+            const valueAsNumber = parseFloat(value)
             return type === "deposit"
-                ? accumulator + value
-                : accumulator - value
+                ? accumulator + valueAsNumber
+                : accumulator - valueAsNumber
         }, 0)
 
-        return balance
+        // console.log(balance)
+        const balanceAsNumber = parseFloat(balance).toFixed(2)
+
+        return balanceAsNumber
+    }
+
+    function setBalanceContainerContent() {
+        return statements.length > 0 ? (
+            <>
+                <p className="statements__balance-label">Saldo</p>
+                <p
+                    className={`statements__balance-value ${
+                        calcBalance() > 0
+                            ? "positive-number"
+                            : "negative-number"
+                    }`}
+                >
+                    {calcBalance()}
+                </p>
+            </>
+        ) : (
+            <></>
+        )
     }
 
     return (
@@ -43,16 +86,7 @@ export default function Statements(props) {
                 )}
             </ul>
             <div className="statements__balance-container">
-                <p className="statements__balance-label">Saldo</p>
-                <p
-                    className={`statements__balance-value ${
-                        calcBalance() > 0
-                            ? "positive-number"
-                            : "negative-number"
-                    }`}
-                >
-                    {calcBalance()}
-                </p>
+                {setBalanceContainerContent()}
             </div>
         </article>
     )

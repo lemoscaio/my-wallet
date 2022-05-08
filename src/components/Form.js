@@ -60,13 +60,12 @@ export default function Form() {
             case "/new-entry/deposit":
             case "/new-entry/withdraw":
                 e.preventDefault()
-                const finalValue = value.replace("R$", "")
 
                 axios
                     .post(
                         `${API_URL}/statements`,
                         {
-                            value: finalValue,
+                            value,
                             description,
                             type: entryType,
                         },
