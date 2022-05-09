@@ -125,9 +125,10 @@ export default function Form(props) {
                         navigate("/")
                     })
                     .catch((error) => {
-                        console.log({ description, value, type: existingType })
-
-                        console.log(error)
+                        if(error.response.data?.includes("Data must be different to update")) {
+                            navigate("/")
+                        }
+                        setRequestError(error)
                     })
                 break
             default:
