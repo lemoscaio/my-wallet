@@ -7,6 +7,8 @@ const API_URL = "http://192.168.1.178:5000"
 export default function Statements() {
     const token = localStorage.getItem("token")
     const [statements, setStatements] = useState([])
+    const [requestError, setRequestError] = useState({})
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         axios
@@ -14,12 +16,36 @@ export default function Statements() {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
+                setIsLoading(false)
                 setStatements([...response.data])
             })
             .catch((error) => {
+                setIsLoading(false)
+                setRequestError(error)
                 console.log(error)
             })
     }, [])
+
+    function setErrorContainerContent() {
+        let errorMessage = ""
+
+        switch (requestError.response?.status) {
+            case 0:
+                errorMessage = "Erro de conexão. Tente novamente."
+                break
+            case 500:
+                errorMessage = "Algo de errado aconteceu. Tente novamente!"
+                break
+            default:
+                errorMessage = "Não há registros de entrada ou saída"
+                break
+        }
+        return (
+            <>
+                <p className="statements__empty">{errorMessage}</p>
+            </>
+        )
+    }
 
     function calcBalance() {
         let balance = statements.reduce((accumulator, { value, type }) => {
@@ -29,7 +55,6 @@ export default function Statements() {
                 : accumulator - valueAsNumber
         }, 0)
 
-        // console.log(balance)
         const balanceAsNumber = parseFloat(balance).toFixed(2)
 
         return balanceAsNumber
@@ -57,30 +82,34 @@ export default function Statements() {
     return (
         <article className="main-screen__statements statements">
             <ul className="statements__list">
-                {statements?.length > 0 ? (
-                    statements.map(({ description, type, value }) => {
-                        return (
-                            <li className="statements__item">
-                                <h1 className="statements__date">10/04</h1>
-                                <h1 className="statements__description">
-                                    {description}
-                                </h1>
-                                <h1
-                                    className={`statements__value ${
-                                        type === "deposit"
-                                            ? "positive-number"
-                                            : "negative-number"
-                                    }`}
-                                >
-                                    {value}
-                                </h1>
-                            </li>
-                        )
-                    })
+                {!isLoading ? (
+                    statements?.length > 0 ? (
+                        statements.map(({ description, type, value }) => {
+                            return (
+                                <li className="statements__item">
+                                    <h1 className="statements__date">10/04</h1>
+                                    <h1 className="statements__description">
+                                        {description}
+                                    </h1>
+                                    <h1
+                                        className={`statements__value ${
+                                            type === "deposit"
+                                                ? "positive-number"
+                                                : "negative-number"
+                                        }`}
+                                    >
+                                        {value}
+                                    </h1>
+                                </li>
+                            )
+                        })
+                    ) : (
+                        setErrorContainerContent()
+                    )
                 ) : (
-                    <p className="statements__empty">
-                        Não há registros de entrada ou saída
-                    </p>
+                    <>
+                        <p className="statements__empty">Carregando...</p>
+                    </>
                 )}
             </ul>
 

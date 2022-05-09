@@ -1,9 +1,9 @@
 import React, { useState } from "react"
 import { Link, useNavigate, useLocation, useParams } from "react-router-dom"
-import InputMask from "react-input-mask"
 import CurrencyInput from "react-currency-input-field"
 import axios from "axios"
-
+// import dotenv from "dotenv"
+// console.log(dotenv.config())
 // const API_URL = "https://caio-lemos-my-wallet.herokuapp.com"
 const API_URL = "http://192.168.1.178:5000"
 
@@ -17,10 +17,13 @@ export default function Form() {
 
     const [name, setName] = useState()
     const [email, setEmail] = useState()
+
     const [password, setPassword] = useState()
     const [passwordConfirmation, setPasswordConfirmation] = useState()
     const [trackingPassword, setTrackingPassword] = useState(false)
     const [matchingPassword, setMatchingPassword] = useState(false)
+
+    const [requestError, setRequestError] = useState({})
 
     const [value, setValue] = useState()
     const [description, setDescription] = useState("")
@@ -38,15 +41,12 @@ export default function Form() {
                         password,
                     })
                     .then((response) => {
-                        // console.log(response);
-
                         localStorage.setItem("token", response.data.token)
                         localStorage.setItem("user", response.data.name)
                         navigate("/")
                     })
                     .catch((error) => {
-                        console.log(error.response.status)
-                        console.log(error.response.data)
+                        setRequestError(error)
                     })
                 break
 
@@ -66,9 +66,7 @@ export default function Form() {
                         navigate("/sign-in")
                     })
                     .catch((error) => {
-                        console.log(error)
-                        console.log(error.response.status)
-                        console.log(error.response.data)
+                        setRequestError(error)
                     })
                 break
 
@@ -96,9 +94,7 @@ export default function Form() {
                         navigate("/")
                     })
                     .catch((error) => {
-                        console.log(error)
-                        console.log(error.response.status)
-                        console.log(error.response.data)
+                        setRequestError(error)
                     })
                 break
 
@@ -141,6 +137,41 @@ export default function Form() {
         }
     }
 
+    function setErrorContainerContent() {
+        let errorMessage = ""
+
+        switch (requestError.response?.status) {
+            case 0:
+                errorMessage = "Erro de conexão. Tente novamente."
+                break
+            case 400:
+                errorMessage = "O valor deve ser maior que zero!"
+                break
+            case 401:
+                errorMessage = "E-mail e/ou senha inválido(s)."
+                break
+            case 406:
+                errorMessage = `Senha muito fraca. Experimetne adicionar letras
+                maiúsculas, números e/ou caracteres especiais.`
+                break
+            case 409:
+                errorMessage = "E-mail já cadastrado!."
+                break
+            case 500:
+                errorMessage = "Algo de errado aconteceu. Tente novamente!"
+                break
+            default:
+                break
+        }
+        return errorMessage.length > 0 ? (
+            <>
+                <p>{errorMessage}</p>
+            </>
+        ) : (
+            <></>
+        )
+    }
+
     function setFormContent() {
         switch (path) {
             case "/sign-in":
@@ -170,6 +201,7 @@ export default function Form() {
                                     setPassword(e.target.value)
                                 }}
                             />
+                            {setErrorContainerContent()}
                             <button type="submit" className="form__button">
                                 Entrar
                             </button>
@@ -182,7 +214,6 @@ export default function Form() {
                         </form>
                     </>
                 )
-
             case "/sign-up":
                 return (
                     <form className="sign__form form" onSubmit={handleSubmit}>
@@ -233,16 +264,15 @@ export default function Form() {
                             }}
                         />
                         {isPasswordMatching()}
-
                         <button type="submit" className="form__button">
                             Cadastrar
                         </button>
+                        {setErrorContainerContent()}
                         <Link className="form__link-to-sign-in" to={"/sign-in"}>
-                            Primeira vez? Cadastre-se!
+                            Já tem uma conta? Entre agora!
                         </Link>
                     </form>
                 )
-
             case "/new-entry/deposit":
             case "/new-entry/withdraw":
                 return (
@@ -266,7 +296,7 @@ export default function Form() {
                                 setDescription(e.target.value)
                             }}
                         />
-
+                        {setErrorContainerContent()}
                         <button type="submit" className="form__button">
                             Salvar
                         </button>
