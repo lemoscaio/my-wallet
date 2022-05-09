@@ -87,7 +87,7 @@ export default function Form(props) {
             case "/new-entry/withdraw":
                 e.preventDefault()
                 const valueAsNumber = parseFloat(value.replace(",", "."))
-
+                console.log(process.env.REACT_APP_API_URL)
                 axios
                     .post(
                         `${process.env.REACT_APP_API_URL}/statements`,
@@ -255,8 +255,8 @@ export default function Form(props) {
                 errorMessage = "E-mail ou senha inválidos."
                 break
             case 406:
-                errorMessage = `Senha muito fraca. Experimetne adicionar letras
-                maiúsculas, números e/ou caracteres especiais.`
+                errorMessage = `Senha muito fraca. Experimente adicionar letras
+                maiúsculas, números ou caracteres especiais.`
                 break
             case 409:
                 errorMessage = "E-mail já cadastrado!."
