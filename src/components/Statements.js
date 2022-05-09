@@ -21,7 +21,6 @@ export default function Statements() {
             .catch((error) => {
                 setIsLoading(false)
                 setRequestError(error)
-                console.log(error)
             })
     }, [])
 

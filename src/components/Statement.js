@@ -27,10 +27,6 @@ export default function Statement(props) {
             })
             .then((response) => {
                 e.target.parentNode.parentNode.remove()
-                console.log(response)
-            })
-            .catch((error) => {
-                console.log(error)
             })
         return
     }
