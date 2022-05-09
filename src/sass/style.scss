@@ -20,11 +20,16 @@ a {
     height: 100vh;
     width: 100vw;
     font-family: $font-main;
+
+    overflow: hidden;
 }
 
 .header {
+    position: fixed;
     width: 90%;
     margin: 0 auto;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     justify-content: space-between;
 
@@ -53,7 +58,7 @@ a {
 
         &::placeholder {
             font-family: $font-main;
-            color: $color-font-secondary;
+            color: $color-button-light;
         }
     }
     &__button {
@@ -110,8 +115,12 @@ a {
 
 .main-screen {
     .statements {
+        position: fixed;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
         width: 90%;
-        height: 100%;
+        height: calc(100% - 220px);
 
         background-color: white;
 
@@ -120,11 +129,19 @@ a {
 
         border-radius: 5px;
 
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
         &__empty {
             color: $color-button-light;
             width: 50%;
             text-align: center;
             margin: 0 auto;
+        }
+
+        &__list {
+            overflow-y: auto;
         }
 
         &__item {
@@ -161,7 +178,6 @@ a {
             font-weight: bold;
             text-transform: uppercase;
         }
-
 
         &__balance-value {
             font-weight: 500;
@@ -217,5 +233,10 @@ a {
         width: 90%;
         height: 100%;
         margin: 0 auto;
+
+        position: fixed;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
     }
 }

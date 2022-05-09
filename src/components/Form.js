@@ -5,7 +5,7 @@ import CurrencyInput from "react-currency-input-field"
 import axios from "axios"
 
 // const API_URL = "https://caio-lemos-my-wallet.herokuapp.com"
-const API_URL = "http://localhost:5000"
+const API_URL = "http://192.168.1.178:5000"
 
 export default function Form() {
     const navigate = useNavigate()
@@ -19,6 +19,8 @@ export default function Form() {
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
     const [passwordConfirmation, setPasswordConfirmation] = useState()
+    const [trackingPassword, setTrackingPassword] = useState(false)
+    const [matchingPassword, setMatchingPassword] = useState(false)
 
     const [value, setValue] = useState()
     const [description, setDescription] = useState("")
@@ -27,8 +29,14 @@ export default function Form() {
         switch (path) {
             case "/sign-in":
                 e.preventDefault()
+
+                const lowerCaseEmailSignIn = email.toLowerCase()
+
                 axios
-                    .post(`${API_URL}/sign-in`, { email, password })
+                    .post(`${API_URL}/sign-in`, {
+                        email: lowerCaseEmailSignIn,
+                        password,
+                    })
                     .then((response) => {
                         // console.log(response);
 
@@ -44,8 +52,15 @@ export default function Form() {
 
             case "/sign-up":
                 e.preventDefault()
+
+                const lowerCaseEmailSignUp = email.toLowerCase()
+
                 axios
-                    .post(`${API_URL}/sign-up`, { name, email, password })
+                    .post(`${API_URL}/sign-up`, {
+                        name,
+                        email: lowerCaseEmailSignUp,
+                        password,
+                    })
                     .then((response) => {
                         console.log(response)
                         navigate("/sign-in")
@@ -60,12 +75,13 @@ export default function Form() {
             case "/new-entry/deposit":
             case "/new-entry/withdraw":
                 e.preventDefault()
+                const valueAsNumber = parseFloat(value.replace(",", "."))
 
                 axios
                     .post(
                         `${API_URL}/statements`,
                         {
-                            value,
+                            value: valueAsNumber,
                             description,
                             type: entryType,
                         },
@@ -91,11 +107,38 @@ export default function Form() {
         }
     }
 
+    function startTrackingPassword(e) {
+        if (e.target.name === "password") {
+            setPassword(e.target.value)
+            if (e.target.value === passwordConfirmation)
+                setMatchingPassword(true)
+            else setMatchingPassword(false)
+        }
+        if (e.target.name === "password-confirmation") {
+            setPasswordConfirmation(e.target.value)
+            e.target.value.length > 0
+                ? setTrackingPassword(true)
+                : setTrackingPassword(false)
+            if (e.target.value === password) setMatchingPassword(true)
+            else setMatchingPassword(false)
+        }
+    }
+
     function cancelAndReturn() {
         setValue("")
         setDescription("")
         navigate(-1)
         return
+    }
+
+    function isPasswordMatching() {
+        if (trackingPassword && matchingPassword) {
+            return <p>As senhas estão iguais</p>
+        } else if (trackingPassword && !matchingPassword) {
+            return <p>As senhas não correspondem</p>
+        } else {
+            return <></>
+        }
     }
 
     function setFormContent() {
@@ -148,6 +191,8 @@ export default function Form() {
                             className="form__input"
                             type="text"
                             placeholder="Nome"
+                            pattern="^[a-zA-ZãÃÇ-Üá-ú ]*$"
+                            title="A menos que você seja o filho do Elon Musk, o campo de nome deve conter apenas letras."
                             value={name}
                             onChange={(e) => {
                                 setName(e.target.value)
@@ -165,24 +210,30 @@ export default function Form() {
                         />
                         <input
                             required
+                            name="password"
                             className="form__input"
                             type="password"
                             placeholder="Senha"
+                            pattern="^\S{6,20}$"
+                            title="Sua senha precisa ter de 6 a 20 caracteres e pode conter letras minúsculas, maiúculas, números e caracteres especiais"
                             value={password}
                             onChange={(e) => {
-                                setPassword(e.target.value)
+                                startTrackingPassword(e)
                             }}
                         />
                         <input
                             required
+                            name="password-confirmation"
                             className="form__input"
                             type="password"
                             placeholder="Confirme a senha"
                             value={passwordConfirmation}
                             onChange={(e) => {
-                                setPasswordConfirmation(e.target.value)
+                                startTrackingPassword(e)
                             }}
                         />
+                        {isPasswordMatching()}
+
                         <button type="submit" className="form__button">
                             Cadastrar
                         </button>
@@ -204,8 +255,7 @@ export default function Form() {
                             step="1"
                             min="10"
                             maxLength="7"
-                            // value={value}
-                            onValueChange={(value) => setValue(value)}
+                            onValueChange={(newValue) => setValue(newValue)}
                         />
                         <input
                             className="form__input"

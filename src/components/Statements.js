@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import axios from "axios"
 
 // const API_URL = "https://caio-lemos-my-wallet.herokuapp.com"
-const API_URL = "http://localhost:5000"
+const API_URL = "http://192.168.1.178:5000"
 
 export default function Statements() {
     const token = localStorage.getItem("token")
@@ -14,8 +14,6 @@ export default function Statements() {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
-                console.log(response)
-
                 setStatements([...response.data])
             })
             .catch((error) => {
@@ -39,7 +37,7 @@ export default function Statements() {
 
     function setBalanceContainerContent() {
         return statements.length > 0 ? (
-            <>
+            <div className="statements__balance-container">
                 <p className="statements__balance-label">Saldo</p>
                 <p
                     className={`statements__balance-value ${
@@ -50,7 +48,7 @@ export default function Statements() {
                 >
                     {calcBalance()}
                 </p>
-            </>
+            </div>
         ) : (
             <></>
         )
@@ -85,9 +83,8 @@ export default function Statements() {
                     </p>
                 )}
             </ul>
-            <div className="statements__balance-container">
-                {setBalanceContainerContent()}
-            </div>
+
+            {setBalanceContainerContent()}
         </article>
     )
 }
