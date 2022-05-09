@@ -29,6 +29,7 @@ export default function Form(props) {
     const [description, setDescription] = useState("")
     const existingDescription = props?.description
     const existingValue = props?.value
+    let existingType = props?.type
     const existingId = props?._id
 
     useEffect(() => {
@@ -102,7 +103,6 @@ export default function Form(props) {
                         }
                     )
                     .then((response) => {
-                        console.log(response)
                         navigate("/")
                     })
                     .catch((error) => {
@@ -116,16 +116,17 @@ export default function Form(props) {
                 axios
                     .put(
                         `${process.env.REACT_APP_API_URL}/statements/${existingId}`,
-                        { description, value },
+                        { description, value, type: existingType },
                         {
                             headers: { Authorization: `Bearer ${token}` },
                         }
                     )
                     .then((response) => {
                         navigate("/")
-                        console.log(response)
                     })
                     .catch((error) => {
+                        console.log({ description, value, type: existingType })
+
                         console.log(error)
                     })
                 break
@@ -178,6 +179,51 @@ export default function Form(props) {
 
     function setButtonDisabled() {
         return !name || !email || !matchingPassword ? true : false
+    }
+
+    function setTypeSelectInput() {
+        switch (existingType) {
+            case "deposit":
+                return (
+                    <>
+                        <select
+                            className="form__input"
+                            name="type"
+                            id="type"
+                            defaultValue="deposit"
+                            onChange={(e) => {
+                                handleSelectChange(e)
+                            }}
+                        >
+                            <option value="deposit">Entrada (atual)</option>
+                            <option value="withdraw">Saída</option>
+                        </select>
+                    </>
+                )
+            case "withdraw":
+                return (
+                    <>
+                        <select
+                            className="form__input"
+                            name="type"
+                            id="type"
+                            defaultValue="withdraw"
+                            onChange={(e) => {
+                                handleSelectChange(e)
+                            }}
+                        >
+                            <option value="deposit">Entrada</option>
+                            <option value="withdraw">Saída (atual)</option>
+                        </select>
+                    </>
+                )
+            default:
+                return <></>
+        }
+    }
+
+    function handleSelectChange(e) {
+        existingType = e.target.value
     }
 
     function setErrorContainerContent(errorPlacement = "before-button") {
@@ -359,7 +405,7 @@ export default function Form(props) {
                                 setDescription(e.target.value)
                             }}
                         />
-
+                        {setTypeSelectInput()}
                         {setErrorContainerContent()}
                         <button type="submit" className="form__button">
                             Salvar

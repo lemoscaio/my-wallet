@@ -7,9 +7,9 @@ export default function NewEntryScreeen() {
     const { entryType } = useParams()
 
     const location = useLocation()
-    console.log(location.state)
     const description = location.state?.description
     const value = location.state?.value
+    const existingType = location.state?.type
     const _id = location.state?._id
 
     const type = entryType === "deposit" ? "entrada" : "saída"
@@ -18,7 +18,12 @@ export default function NewEntryScreeen() {
         <main className="new-entry-screen container">
             <Header name={type}></Header>
             <div className="new-entry">
-                <Form description={description} value={value} _id={_id} />
+                <Form
+                    description={description}
+                    value={value}
+                    _id={_id}
+                    type={existingType}
+                />
             </div>
         </main>
     )

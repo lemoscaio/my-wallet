@@ -13,17 +13,13 @@ export default function Statement(props) {
     }
 
     function handleEditClick(e) {
-        console.log("entrei pra editar")
-        console.log(e.target.parentNode)
-
         e.stopPropagation()
-
-        navigate(`./new-entry/edit`, { state: { description, value, _id } })
+        navigate(`./new-entry/edit`, {
+            state: { description, value, type, _id },
+        })
     }
 
     function handleDeleteClick(e) {
-        console.log("entrei pra excluir")
-
         e.stopPropagation()
         axios
             .delete(`${process.env.REACT_APP_API_URL}/statements/${_id}`, {
