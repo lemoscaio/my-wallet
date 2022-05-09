@@ -39,7 +39,7 @@ export default function Statements() {
         }
         return (
             <>
-                <p className="statements__empty">{errorMessage}</p>
+                <li className="statements__item"><p className="statements__empty">{errorMessage}</p></li>
             </>
         )
     }
@@ -109,7 +109,7 @@ export default function Statements() {
                     )
                 ) : (
                     <>
-                        <p className="statements__empty">Carregando...</p>
+                        <li className="statements__item"><p className="statements__empty">Carregando...</p></li>
                     </>
                 )}
             </ul>
