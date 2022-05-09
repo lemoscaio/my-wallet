@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import axios from "axios"
+import Statement from "./Statement"
 
 export default function Statements() {
     const token = localStorage.getItem("token")
@@ -14,6 +15,7 @@ export default function Statements() {
             })
             .then((response) => {
                 setIsLoading(false)
+
                 setStatements([...response.data])
             })
             .catch((error) => {
@@ -81,29 +83,23 @@ export default function Statements() {
             <ul className="statements__list">
                 {!isLoading ? (
                     statements?.length > 0 ? (
-                        statements.map(({ description, type, value }) => {
-                            return (
-                                <li className="statements__item">
-                                    <div className="statements__item-first-collumn">
-                                        <h1 className="statements__date">
-                                            10/04
-                                        </h1>
-                                        <h1 className="statements__description">
-                                            {description}
-                                        </h1>
-                                    </div>
-                                    <h1
-                                        className={`statements__value ${
-                                            type === "deposit"
-                                                ? "positive-number"
-                                                : "negative-number"
-                                        }`}
-                                    >
-                                        {value}
-                                    </h1>
-                                </li>
-                            )
-                        })
+                        statements.map(
+                            (
+                                { description, type, value, date, _id },
+                                index
+                            ) => {
+                                return (
+                                    <Statement
+                                        key={index}
+                                        description={description}
+                                        type={type}
+                                        value={value}
+                                        date={date}
+                                        _id={_id}
+                                    ></Statement>
+                                )
+                            }
+                        )
                     ) : (
                         setErrorContainerContent()
                     )

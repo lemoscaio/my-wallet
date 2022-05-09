@@ -21,6 +21,12 @@ export default function Header(props) {
                         <h2 className="header__name">Nova {props.name}</h2>
                     </>
                 )
+            case "/new-entry/edit":
+                return (
+                    <>
+                        <h2 className="header__name">Editar {props.name}</h2>
+                    </>
+                )
             default:
                 return (
                     <>

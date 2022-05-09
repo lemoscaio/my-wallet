@@ -8,6 +8,7 @@
 
 * {
     box-sizing: border-box;
+    transition: all 0.1s;
 }
 
 button,
@@ -67,6 +68,7 @@ input {
             color: $color-button-light;
         }
     }
+
     &__button {
         width: 100%;
 
@@ -88,7 +90,8 @@ input {
             border: 3px solid $color-button-background;
         }
 
-        &:disabled,&[disabled]{
+        &:disabled,
+        &[disabled] {
             background-color: $color-disabled-button-background;
         }
     }
@@ -147,7 +150,7 @@ input {
             overflow-y: auto;
             overflow-x: hidden;
             height: 100%;
-            padding: 5px 10px;
+            padding: 5px 0px;
             position: relative;
 
             &::-webkit-scrollbar-track {
@@ -172,7 +175,7 @@ input {
             left: 50%;
             transform: translate(-50%, -50%);
 
-            color: $color-button-light; 
+            color: $color-button-light;
             width: 50%;
             text-align: center;
             margin: 0 auto;
@@ -180,10 +183,47 @@ input {
 
         &__item {
             width: 100%;
-            padding: 6px 0;
+            padding: 6px 10px;
             position: relative;
+            // display: flex;
+            // justify-content: space-between;
+
+            &--clicked {
+                // background-color: red;
+                margin: 0 auto;
+                width: 95%;
+                border-radius: 7px;
+                padding: 10px;
+                box-shadow: 0px 1px 5px 2px  rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        &__item-main-content {
             display: flex;
             justify-content: space-between;
+        }
+
+        &__item-secondary-content {
+            margin-top: 7px;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid black;
+            padding: 4px 0;
+        }
+
+        &__button {
+            flex-grow: 1;
+            border:none;
+            padding: 5px 0;
+            background-color: $color-button-edit-or-delete;
+            border-radius: 0px 0px 5px 5px
+
+            &--left {
+
+            }
+            &--right {
+                
+            }
         }
 
         &__item-first-collumn {

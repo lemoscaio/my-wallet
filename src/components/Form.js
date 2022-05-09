@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Link, useNavigate, useLocation, useParams } from "react-router-dom"
 import {
     BsFillExclamationTriangleFill,
@@ -7,7 +7,7 @@ import {
 import CurrencyInput from "react-currency-input-field"
 import axios from "axios"
 
-export default function Form() {
+export default function Form(props) {
     const navigate = useNavigate()
     const location = useLocation()
     const { entryType } = useParams()
@@ -27,6 +27,16 @@ export default function Form() {
 
     const [value, setValue] = useState()
     const [description, setDescription] = useState("")
+    const existingDescription = props?.description
+    const existingValue = props?.value
+    const existingId = props?._id
+
+    useEffect(() => {
+        if (props) {
+            setDescription(existingDescription)
+            setValue(existingValue)
+        }
+    }, [])
 
     function handleSubmit(e) {
         switch (path) {
@@ -101,7 +111,24 @@ export default function Form() {
                         setRequestError(error)
                     })
                 break
-
+            case "/new-entry/edit":
+                e.preventDefault()
+                axios
+                    .put(
+                        `${process.env.REACT_APP_API_URL}/statements/${existingId}`,
+                        { description, value },
+                        {
+                            headers: { Authorization: `Bearer ${token}` },
+                        }
+                    )
+                    .then((response) => {
+                        navigate("/")
+                        console.log(response)
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+                break
             default:
                 break
         }
@@ -309,6 +336,7 @@ export default function Form() {
                 )
             case "/new-entry/deposit":
             case "/new-entry/withdraw":
+            case "/new-entry/edit":
                 return (
                     <form className="sign__form form" onSubmit={handleSubmit}>
                         <CurrencyInput
@@ -319,6 +347,7 @@ export default function Form() {
                             step="1"
                             min="10"
                             max="1000000"
+                            value={value}
                             onValueChange={(newValue) => setValue(newValue)}
                         />
                         <input
@@ -330,6 +359,7 @@ export default function Form() {
                                 setDescription(e.target.value)
                             }}
                         />
+
                         {setErrorContainerContent()}
                         <button type="submit" className="form__button">
                             Salvar
