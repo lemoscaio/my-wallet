@@ -1,11 +1,8 @@
 import React, { useState } from "react"
 import { Link, useNavigate, useLocation, useParams } from "react-router-dom"
+import { BsFillExclamationTriangleFill, BsCheckCircleFill } from "react-icons/bs"
 import CurrencyInput from "react-currency-input-field"
 import axios from "axios"
-// import dotenv from "dotenv"
-// console.log(dotenv.config())
-// const API_URL = "https://caio-lemos-my-wallet.herokuapp.com"
-const API_URL = "http://192.168.1.178:5000"
 
 export default function Form() {
     const navigate = useNavigate()
@@ -36,7 +33,7 @@ export default function Form() {
                 const lowerCaseEmailSignIn = email.toLowerCase()
 
                 axios
-                    .post(`${API_URL}/sign-in`, {
+                    .post(`${process.env.REACT_APP_API_URL}/sign-in`, {
                         email: lowerCaseEmailSignIn,
                         password,
                     })
@@ -53,10 +50,12 @@ export default function Form() {
             case "/sign-up":
                 e.preventDefault()
 
+                setTrackingPassword(false)
+
                 const lowerCaseEmailSignUp = email.toLowerCase()
 
                 axios
-                    .post(`${API_URL}/sign-up`, {
+                    .post(`${process.env.REACT_APP_API_URL}/sign-up`, {
                         name,
                         email: lowerCaseEmailSignUp,
                         password,
@@ -77,7 +76,7 @@ export default function Form() {
 
                 axios
                     .post(
-                        `${API_URL}/statements`,
+                        `${process.env.REACT_APP_API_URL}/statements`,
                         {
                             value: valueAsNumber,
                             description,
@@ -94,6 +93,8 @@ export default function Form() {
                         navigate("/")
                     })
                     .catch((error) => {
+                        console.log(error);
+                        
                         setRequestError(error)
                     })
                 break
@@ -129,15 +130,15 @@ export default function Form() {
 
     function isPasswordMatching() {
         if (trackingPassword && matchingPassword) {
-            return <p>As senhas estão iguais</p>
+            return <p className="additional-message additional-message--password"><BsCheckCircleFill />  As senhas estão iguais</p>
         } else if (trackingPassword && !matchingPassword) {
-            return <p>As senhas não correspondem</p>
+            return <p className="additional-message additional-message--password"><BsFillExclamationTriangleFill />  As senhas não correspondem</p>
         } else {
             return <></>
         }
     }
 
-    function setErrorContainerContent() {
+    function setErrorContainerContent(errorPlacement = "before-button") {
         let errorMessage = ""
 
         switch (requestError.response?.status) {
@@ -145,10 +146,19 @@ export default function Form() {
                 errorMessage = "Erro de conexão. Tente novamente."
                 break
             case 400:
-                errorMessage = "O valor deve ser maior que zero!"
+                switch(requestError.response?.data[0].type) {
+                    case "number.min":
+                    errorMessage = "O valor deve ser maior que zero!"
+                    break
+                    case "number.max":
+                    errorMessage = "Você não é o Elon Musk para fazer movimentações tão grandes! Bota um valor menor aí, por favor"
+                    break
+                    default: 
+                    break
+                }
                 break
             case 401:
-                errorMessage = "E-mail e/ou senha inválido(s)."
+                errorMessage = "E-mail ou senha inválidos."
                 break
             case 406:
                 errorMessage = `Senha muito fraca. Experimetne adicionar letras
@@ -165,7 +175,9 @@ export default function Form() {
         }
         return errorMessage.length > 0 ? (
             <>
-                <p>{errorMessage}</p>
+                <p className={`additional-message additional-message--${errorPlacement}`}>
+                    <BsFillExclamationTriangleFill /> {errorMessage}
+                </p>
             </>
         ) : (
             <></>
@@ -267,7 +279,7 @@ export default function Form() {
                         <button type="submit" className="form__button">
                             Cadastrar
                         </button>
-                        {setErrorContainerContent()}
+                        {setErrorContainerContent("after-button")}
                         <Link className="form__link-to-sign-in" to={"/sign-in"}>
                             Já tem uma conta? Entre agora!
                         </Link>
@@ -284,7 +296,7 @@ export default function Form() {
                             placeholder="Valor (Ex.: 50,00)"
                             step="1"
                             min="10"
-                            maxLength="7"
+                            max="1000000"
                             onValueChange={(newValue) => setValue(newValue)}
                         />
                         <input

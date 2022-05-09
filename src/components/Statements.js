@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react"
 import axios from "axios"
 
-// const API_URL = "https://caio-lemos-my-wallet.herokuapp.com"
-const API_URL = "http://192.168.1.178:5000"
-
 export default function Statements() {
     const token = localStorage.getItem("token")
     const [statements, setStatements] = useState([])
@@ -12,7 +9,7 @@ export default function Statements() {
 
     useEffect(() => {
         axios
-            .get(`${API_URL}/statements`, {
+            .get(`${process.env.REACT_APP_API_URL}/statements`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
@@ -87,10 +84,14 @@ export default function Statements() {
                         statements.map(({ description, type, value }) => {
                             return (
                                 <li className="statements__item">
-                                    <h1 className="statements__date">10/04</h1>
-                                    <h1 className="statements__description">
-                                        {description}
-                                    </h1>
+                                    <div className="statements__item-first-collumn">
+                                        <h1 className="statements__date">
+                                            10/04
+                                        </h1>
+                                        <h1 className="statements__description">
+                                            {description}
+                                        </h1>
+                                    </div>
                                     <h1
                                         className={`statements__value ${
                                             type === "deposit"
