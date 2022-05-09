@@ -87,6 +87,10 @@ input {
             background-color: transparent;
             border: 3px solid $color-button-background;
         }
+
+        &:disabled,&[disabled]{
+            background-color: $color-disabled-button-background;
+        }
     }
 
     &__link-to-sign-up,
@@ -168,7 +172,7 @@ input {
             left: 50%;
             transform: translate(-50%, -50%);
 
-            color: $color-button-light;
+            color: $color-button-light; 
             width: 50%;
             text-align: center;
             margin: 0 auto;

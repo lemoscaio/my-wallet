@@ -1,6 +1,9 @@
 import React, { useState } from "react"
 import { Link, useNavigate, useLocation, useParams } from "react-router-dom"
-import { BsFillExclamationTriangleFill, BsCheckCircleFill } from "react-icons/bs"
+import {
+    BsFillExclamationTriangleFill,
+    BsCheckCircleFill,
+} from "react-icons/bs"
 import CurrencyInput from "react-currency-input-field"
 import axios from "axios"
 
@@ -93,8 +96,8 @@ export default function Form() {
                         navigate("/")
                     })
                     .catch((error) => {
-                        console.log(error);
-                        
+                        console.log(error)
+
                         setRequestError(error)
                     })
                 break
@@ -130,12 +133,24 @@ export default function Form() {
 
     function isPasswordMatching() {
         if (trackingPassword && matchingPassword) {
-            return <p className="additional-message additional-message--password"><BsCheckCircleFill />  As senhas estão iguais</p>
+            return (
+                <p className="additional-message additional-message--password">
+                    <BsCheckCircleFill /> As senhas estão iguais
+                </p>
+            )
         } else if (trackingPassword && !matchingPassword) {
-            return <p className="additional-message additional-message--password"><BsFillExclamationTriangleFill />  As senhas não correspondem</p>
+            return (
+                <p className="additional-message additional-message--password">
+                    <BsFillExclamationTriangleFill /> As senhas não correspondem
+                </p>
+            )
         } else {
             return <></>
         }
+    }
+
+    function setButtonDisabled() {
+        return !name || !email || !matchingPassword ? true : false
     }
 
     function setErrorContainerContent(errorPlacement = "before-button") {
@@ -146,15 +161,16 @@ export default function Form() {
                 errorMessage = "Erro de conexão. Tente novamente."
                 break
             case 400:
-                switch(requestError.response?.data[0].type) {
+                switch (requestError.response?.data[0].type) {
                     case "number.min":
-                    errorMessage = "O valor deve ser maior que zero!"
-                    break
+                        errorMessage = "O valor deve ser maior que zero!"
+                        break
                     case "number.max":
-                    errorMessage = "Você não é o Elon Musk para fazer movimentações tão grandes! Bota um valor menor aí, por favor"
-                    break
-                    default: 
-                    break
+                        errorMessage =
+                            "Você não é o Elon Musk para fazer movimentações tão grandes! Bota um valor menor aí, por favor"
+                        break
+                    default:
+                        break
                 }
                 break
             case 401:
@@ -175,7 +191,9 @@ export default function Form() {
         }
         return errorMessage.length > 0 ? (
             <>
-                <p className={`additional-message additional-message--${errorPlacement}`}>
+                <p
+                    className={`additional-message additional-message--${errorPlacement}`}
+                >
                     <BsFillExclamationTriangleFill /> {errorMessage}
                 </p>
             </>
@@ -276,7 +294,11 @@ export default function Form() {
                             }}
                         />
                         {isPasswordMatching()}
-                        <button type="submit" className="form__button">
+                        <button
+                            disabled={setButtonDisabled()}
+                            type="submit"
+                            className="form__button"
+                        >
                             Cadastrar
                         </button>
                         {setErrorContainerContent("after-button")}
